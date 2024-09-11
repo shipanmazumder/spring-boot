@@ -1,25 +1,26 @@
 package com.shipan.cruddemo.service;
 
-import com.shipan.cruddemo.dao.StudentDAO;
+import com.shipan.cruddemo.dao.StudentRepository;
 import com.shipan.cruddemo.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StudentServiceImpl implements StudentService {
 
-    private StudentDAO studentDAO;
+    private StudentRepository studentRepository;
 
     @Autowired
-    public StudentServiceImpl(StudentDAO studentDAO) {
-        this.studentDAO = studentDAO;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     @Override
     public List<Student> findAll() {
-        return studentDAO.findAll();
+        return studentRepository.findAll();
     }
 
     @Override
@@ -29,26 +30,22 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student findById(Integer id) {
-        return studentDAO.findById(id);
+        Optional<Student> result = studentRepository.findById(id);
+        return result.orElse(null);
     }
 
     @Override
     public void save(Student student) {
-        studentDAO.save(student);
+        studentRepository.save(student);
     }
 
     @Override
     public void update(Student student) {
-        studentDAO.update(student);
+        studentRepository.save(student);
     }
 
     @Override
-    public int delete(Integer id) {
-        return studentDAO.delete(id);
-    }
-
-    @Override
-    public int deleteAll() {
-        return studentDAO.deleteAll();
+    public void delete(Integer id) {
+        studentRepository.deleteById(id);
     }
 }

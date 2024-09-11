@@ -55,7 +55,8 @@ public class StudentController {
         if (old == null) {
             throw new NotFoundException("Student Not Found " + studentId);
         }
-        return studentService.delete(studentId);
+        studentService.delete(studentId);
+        return old.getId();
     }
 
 
