@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "students")
-public class Student {
+@Table(name = "instructors")
+public class Instructor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "first_name")
@@ -22,32 +22,25 @@ public class Student {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
-    @JoinTable(name = "course_students",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "instructor_details_id")
+    private InstructorDetails instructorDetails;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "instructor",cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    //one to many bi-directional
     private List<Course> courses;
 
-
-    public Student() {
-    }
-
-    public Student(String firstName, String lastName, String email) {
+    public Instructor(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
+    public Instructor() {
+    }
+
     public int getId() {
         return id;
-    }
-
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
     }
 
     public void setId(int id) {
@@ -78,20 +71,41 @@ public class Student {
         this.email = email;
     }
 
+    public InstructorDetails getInstructorDetails() {
+        return instructorDetails;
+    }
+
+    public void setInstructorDetails(InstructorDetails instructorDetails) {
+        this.instructorDetails = instructorDetails;
+    }
+
     @Override
     public String toString() {
-        return "Student{" +
+        return "Instructor{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", instructorDetails=" + instructorDetails +
+                ", courses=" + courses +
                 '}';
     }
 
-    public void addCourse(Course course) {
-        if (courses == null) {
-            courses = new ArrayList<>();
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public void  add(Course course)
+    {
+        if(courses==null)
+        {
+            courses=new ArrayList<>();
         }
         courses.add(course);
+        course.setInstructor(this);
     }
 }
